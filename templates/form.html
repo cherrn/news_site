@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Форма обратной связи</title>
+    <link rel="stylesheet" href="static/css/styles.css">
+</head>
+   <form method="post">
+ 
+        {{  form.hidden_tag() }}           
+        {{  form.name.label()   }} {{   form.name() }}
+        {{  form.email.label()    }}  {{  form.email()    }}
+        {{  form.phoneNumber.label()   }} {{   form.phoneNumber() }}
+        {{  form.introduction.label()   }}  {{  form.introduction() }}
+        {{  form.text.label()   }}  {{  form.text() }}
+        {{  form.submit()   }}
+    </form>
+</body>
+</html>

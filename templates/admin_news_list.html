@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="static/css/styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Список новостей</title>
+</head>
+<body>
+    <h1>Список новостей</h1>
+  {%  if articles|length > 0 %}
+    {%  for el in articles %}
+      <h2>{{el.title}}</h2>
+      <p><b>Дата: {{el.date.date()}}</b></p>
+      <a href="/admin_news_/{{el.id}}">Детальнее</a>
+      <a href="/"><button>Вернутся на титульную страницу</button></a>
+    {% endfor %}
+  {%   else %}
+  <p>У нас еще нет статей на сайте!</p>
+  <a href="/"><button>Вернутся на титульную страницу</button></a>
+  {% endif %}

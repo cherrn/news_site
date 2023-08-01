@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Добавить новость</title>
+    <link rel="stylesheet" href="static/css/styles.css">
+</head>
+<body>
+    <h1>Добавить новость</h1>
+    <form method="post">
+
+          
+        {{  form.hidden_tag() }}           
+        {{  form.title.label()   }} {{   form.title() }}
+        {{  form.text.label()   }}  {{  form.text() }}
+        {{  form.image_url.label()  }}  {{form.image_url()  }}
+        {{  form.password.label()   }} {{   form.password() }}
+        {{  form.submit()   }}
+
+
+        <a href="/"><button>Вернутся на титульную страницу</button></a>
+    </form>
+</body>
+</html>
