@@ -1,3 +1,5 @@
 setenv.sh
 __pycache__/
 myenw/
+user.db
+blog.db
