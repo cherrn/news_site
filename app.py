@@ -1,10 +1,9 @@
 import os
-from flask import Flask, request, render_template, redirect, session, abort
+from flask import Flask, Response, jsonify, request, render_template, redirect, session, abort
 from database import db, Article, User
 from protect_admin_page import is_authenticated
 from gmail_send import send_email
 from werkzeug.security import generate_password_hash
-from forms import LoginForm, FeedBackForm, AddNewsForm
 
 
 app = Flask(__name__)
@@ -24,8 +23,7 @@ def index():
 
 
 @app.route('/form', methods=['POST', 'GET'])
-def data(): 
-    form = FeedBackForm()
+def feedBackForm(): 
     name = request.form.get('name')
     email = request.form.get('email')
     phone = request.form.get('phoneNumber')
@@ -41,7 +39,7 @@ def data():
     else:
         print('Form is Empty!')
     
-    return render_template('form.html', form=form)
+    return Response(status=200)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -55,32 +53,22 @@ def login():
 
         if is_authenticated(username, password):
             session['user_id'] = username
-            return redirect('/admin_index')
+            return Response(status=200)
 
         try:
             db.session.add(user)
             db.session.commit()
-            return redirect('/')
         except:
             return 'ERROR APPENDING USER TO DATABASE'
 
-    form = LoginForm()
-    return render_template('login.html', form=form)
 
-
-@app.route('/admin_index')
-def admin_ndex():
-    if 'user_id' not in session:
-        abort(404)
-
-    return render_template('admin_index.html')
+    return render_template('login.html')
 
 
 @app.route('/add_news', methods=['GET', 'POST'])
 def add_news():
     if 'user_id' not in session:
         abort(404)
-    form = AddNewsForm()
     if request.method == 'POST':
         password = request.form['password']
         if password == PASSWORD_TO_ADD_NEWS:  # Проверка пароля (замените на свой)
@@ -92,46 +80,50 @@ def add_news():
             try:
                 db.session.add(article)
                 db.session.commit()
-                return redirect('/admin_news_list')
             except:
                 return 'ERROR'
 
-    return render_template('add_news.html', form=form)
+    return render_template('add_news.html')
 
 
 @app.route('/news_list', methods=['POST', 'GET'])
 def news_list():
     articles = Article.query.order_by(Article.date.desc()).all()
+    
+    article_list = []
+    for article in articles:
+        article_dict = {
+            'id': article.id,
+            'title': article.title,
+            'text': article.text,
+            'image_url': article.image_url,
+            'date': article.date.strftime('%Y-%m-%d %H:%M:%S')
+        }
+        article_list.append(article_dict)   
 
-    return render_template('news_list.html', articles=articles)
-
-
-@app.route('/admin_news_list', methods=['POST', 'GET'])
-def admin_news_list():
-    if 'user_id' not in session:
-        abort(404)
-
-    articles = Article.query.order_by(Article.date.desc()).all()
-
-    return render_template('admin_news_list.html', articles=articles)
-
+    return jsonify(article_list)
 
 
 @app.route('/news_/<int:id>', methods=['POST', 'GET'])
 def news_details(id):
     article = Article.query.get(id)
 
-    return render_template('news_details.html', article=article)
-
-
-@app.route('/admin_news_/<int:id>', methods=['POST', 'GET'])
-def admin_news_details(id):
-    if 'user_id' not in session:
-        abort(404)
-
     article = Article.query.get(id)
 
-    return render_template('admin_news_details.html', article=article)
+    if article is None:
+        return jsonify({'error': 'Article not found'})
+
+    article_list = []
+    article_dict = {
+        'title': article.title,
+        'text': article.text,
+        'image_url': article.image_url,
+        'date': article.date.strftime('%Y-%m-%d %H:%M:%S')
+    }
+    
+    article_list.append(article_dict)
+
+    return jsonify(article_list)
 
 
 @app.route('/news/<int:id>/delete', methods=['POST', 'GET'])
@@ -144,7 +136,7 @@ def news_delete(id):
     try:
         db.session.delete(article)
         db.session.commit()
-        return redirect('/news_list')  # Redirect to the list of news articles after successful deletion
+        return Response(status=200)
     except:
         return "ERROR DELETING"      
 

@@ -8,12 +8,11 @@
    
         <h2>Авторизация</h2>
         <form action="/login" method="post">
-          
-        {{  form.hidden_tag() }}           
-        {{  form.username.label()   }} {{   form.username() }}
-        {{  form.password.label()   }} {{   form.password() }}
-        {{  form.submit()   }}
-
+          <label for="username">Имя пользователя:</label>
+          <input type="text" id="username" name="username">
+          <label for="password">Пароль:</label>
+          <input type="password" id="password" name="password">
+          <button type="submit">Войти</button>
         </form>
     </div>
 </body>

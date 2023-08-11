@@ -7,17 +7,16 @@
 <body>
     <h1>Добавить новость</h1>
     <form method="post">
-
-          
-        {{  form.hidden_tag() }}           
-        {{  form.title.label()   }} {{   form.title() }}
-        {{  form.text.label()   }}  {{  form.text() }}
-        {{  form.image_url.label()  }}  {{form.image_url()  }}
-        {{  form.password.label()   }} {{   form.password() }}
-        {{  form.submit()   }}
-
-
-        <a href="/"><button>Вернутся на титульную страницу</button></a>
+      <label for="title">Заголовок:</label>
+      <input type="text" id="title" name="title">
+      <label for="text">Текст:</label>
+      <input type="text" id="text" name="text">
+      <label for="image_url">URL изображения:</label>
+      <input type="text" id="image_url" name="image_url">
+      <label for="password">Пароль:</label>
+      <input type="password" id="password" name="password">
+    <button type="submit">Отправить</button>       
+    <a href="/"><button>Вернутся на титульную страницу</button></a>
     </form>
 </body>
 </html>
